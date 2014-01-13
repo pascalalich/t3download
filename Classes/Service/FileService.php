@@ -47,22 +47,34 @@ class FileService implements \TYPO3\CMS\Core\SingletonInterface {
     /**
      * Create a download configuration
      * 
-     * @param array $fileReferences File / folder references
-     * @param int   $validDate An UNIX valid date (optional)
+     * @param array   $fileReferences File / folder references
+     * @param int     $validDate      An UNIX valid date (optional)
+     * @param boolean $isDirectory    Is directory?
+     * @param string  $directoryPath  The directory path (eg. fileadmin/path/album/)
      * 
      * @return string The secured download URL or FALSE if invalid file references are found
      */
-    public function createDownloadConfiguration(array $fileReferences, int $validDate = 0) {
-        if (count($fileReferences) > 0 && $this->checkFileReferences($fileReferences)) {
+    public function createDownloadConfiguration(array $fileReferences, int $validDate = 0, boolean $isDirectory = false, string $directoryPath = '') {
+        $downloadConfiguration = null;
+        if (count($fileReferences) > 0 && $this->checkFileReferences($fileReferences) && $isDirectory === false) {
             $downloadConfiguration = TYPO3\CMS\Extbase\Object\ObjectManager::get('\TYPO3\T3download\Domain\Model\DownloadConfiguration');
             $downloadConfiguration->setFileReferences(serialize($fileReferences));
-            $downloadConfiguration->setValidDate($validDate);
-            
+            $downloadConfiguration->setValidDate($validDate);            
+        } else if ($isDirectory === true && $directoryPath !== '' && is_dir(PATH_site . $directoryPath)) {
+            $downloadConfiguration = TYPO3\CMS\Extbase\Object\ObjectManager::get('\TYPO3\T3download\Domain\Model\DownloadConfiguration');
+            $downloadConfiguration->setIsDirectory(true);
+            $downloadConfiguration->setDirectoryPath($directoryPath);
+        } else {
+            return false;
+        }
+        
+        if ($downloadConfiguration !== null) {
             $this->downloadConfigurationRepository->add($downloadConfiguration);
         } else {
             return false;
         }
-        return '';
+        
+        return true;
     }
     
     /**
@@ -74,7 +86,7 @@ class FileService implements \TYPO3\CMS\Core\SingletonInterface {
      */
     protected function checkFileReferences(array $fileReferences) {
         foreach ($fileReferences as $fileReference) {
-            if (is_file($fileReference) || is_dir($fileReference)) {
+            if (is_file(PATH_site . $fileReference)) {
                 continue;
             }
             return false;
