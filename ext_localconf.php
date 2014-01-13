@@ -19,7 +19,7 @@ if (!defined('TYPO3_MODE')) {
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService($_EXTKEY, 'fileService', 'tx_t3download_sv1', array(
     'title' => 'FileService',
-    'description' => 'Provice a download file / directory service',
+    'description' => 'Provide a download (configuration) file / directory service',
     'subtype' => '',
     'available' => true,
     'priority' => 60,
