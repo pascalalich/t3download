@@ -34,7 +34,7 @@ namespace TYPO3\T3download\Service;
  * @subpackage Service
  */
 
-class FileService implements \TYPO3\CMS\Core\SingletonInterface {
+class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
     
     /**
      * The download configuration repository
@@ -54,7 +54,7 @@ class FileService implements \TYPO3\CMS\Core\SingletonInterface {
      * 
      * @return string The secured download URL or FALSE if invalid file references are found
      */
-    public function createDownloadConfiguration(array $fileReferences, int $validDate = 0, boolean $isDirectory = false, string $directoryPath = '') {
+    public function createDownloadConfiguration($fileReferences, $validDate = 0, $isDirectory = false, $directoryPath = '') {
         $downloadConfiguration = null;
         if (count($fileReferences) > 0 && $this->checkFileReferences($fileReferences) && $isDirectory === false) {
             $downloadConfiguration = TYPO3\CMS\Extbase\Object\ObjectManager::get('\TYPO3\T3download\Domain\Model\DownloadConfiguration');
@@ -102,7 +102,7 @@ class FileService implements \TYPO3\CMS\Core\SingletonInterface {
      * 
      * @return void
      */
-    public function download(string $securedString) {
+    public function download($securedString) {
         
     }
 }
