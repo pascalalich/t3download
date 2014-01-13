@@ -51,6 +51,20 @@ class DownloadConfiguration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEnti
 	protected $validDate;
 
 	/**
+	 * Is directory
+	 *
+	 * @var boolean
+	 */
+	protected $isDirectory = FALSE;
+
+	/**
+	 * Directory path
+	 *
+	 * @var \string
+	 */
+	protected $directoryPath;
+
+	/**
 	 * Returns the fileReferences
 	 *
 	 * @return \string $fileReferences
@@ -86,6 +100,53 @@ class DownloadConfiguration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEnti
 	 */
 	public function setValidDate($validDate) {
 		$this->validDate = $validDate;
+	}
+
+	/**
+	 * Returns the isDirectory
+	 *
+	 * @return boolean $isDirectory
+	 */
+	public function getIsDirectory() {
+		return $this->isDirectory;
+	}
+
+	/**
+	 * Sets the isDirectory
+	 *
+	 * @param boolean $isDirectory
+	 * @return void
+	 */
+	public function setIsDirectory($isDirectory) {
+		$this->isDirectory = $isDirectory;
+	}
+
+	/**
+	 * Returns the boolean state of isDirectory
+	 *
+	 * @return boolean
+	 */
+	public function isIsDirectory() {
+		return $this->getIsDirectory();
+	}
+
+	/**
+	 * Returns the directoryPath
+	 *
+	 * @return \string $directoryPath
+	 */
+	public function getDirectoryPath() {
+		return $this->directoryPath;
+	}
+
+	/**
+	 * Sets the directoryPath
+	 *
+	 * @param \string $directoryPath
+	 * @return void
+	 */
+	public function setDirectoryPath($directoryPath) {
+		$this->directoryPath = $directoryPath;
 	}
 
 }

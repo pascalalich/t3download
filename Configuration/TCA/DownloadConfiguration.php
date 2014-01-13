@@ -6,10 +6,10 @@ if (!defined ('TYPO3_MODE')) {
 $TCA['tx_t3download_domain_model_downloadconfiguration'] = array(
 	'ctrl' => $TCA['tx_t3download_domain_model_downloadconfiguration']['ctrl'],
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, file_references, valid_date',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, file_references, valid_date, is_directory, directory_path',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, file_references, valid_date,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, file_references, valid_date, is_directory, directory_path,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -114,6 +114,23 @@ $TCA['tx_t3download_domain_model_downloadconfiguration'] = array(
 				'eval' => 'date',
 				'checkbox' => 1,
 				'default' => time()
+			),
+		),
+		'is_directory' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:t3download/Resources/Private/Language/locallang_db.xlf:tx_t3download_domain_model_downloadconfiguration.is_directory',
+			'config' => array(
+				'type' => 'check',
+				'default' => 0
+			),
+		),
+		'directory_path' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:t3download/Resources/Private/Language/locallang_db.xlf:tx_t3download_domain_model_downloadconfiguration.directory_path',
+			'config' => array(
+				'type' => 'input',
+				'size' => 30,
+				'eval' => 'trim'
 			),
 		),
 	),

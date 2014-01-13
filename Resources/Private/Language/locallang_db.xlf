@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2014-01-12T20:17:19Z" product-name="t3download">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-01-13T20:39:09Z" product-name="t3download">
 		<header/>
 		<body>
 
@@ -12,6 +12,12 @@
 			</trans-unit>
 			<trans-unit id="tx_t3download_domain_model_downloadconfiguration.valid_date">
 				<source>Valid Date</source>
+			</trans-unit>
+			<trans-unit id="tx_t3download_domain_model_downloadconfiguration.is_directory">
+				<source>Is Directory</source>
+			</trans-unit>
+			<trans-unit id="tx_t3download_domain_model_downloadconfiguration.directory_path">
+				<source>Directory Path</source>
 			</trans-unit>
 
 		</body>

@@ -80,5 +80,32 @@ class DownloadConfigurationTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCa
 	 */
 	public function setValidDateForDateTimeSetsValidDate() { }
 	
+	/**
+	 * @test
+	 */
+	public function getIsDirectoryReturnsInitialValueForOolean() { }
+
+	/**
+	 * @test
+	 */
+	public function setIsDirectoryForOoleanSetsIsDirectory() { }
+	
+	/**
+	 * @test
+	 */
+	public function getDirectoryPathReturnsInitialValueForString() { }
+
+	/**
+	 * @test
+	 */
+	public function setDirectoryPathForStringSetsDirectoryPath() { 
+		$this->fixture->setDirectoryPath('Conceived at T3CON10');
+
+		$this->assertSame(
+			'Conceived at T3CON10',
+			$this->fixture->getDirectoryPath()
+		);
+	}
+	
 }
 ?>
