@@ -1,0 +1,14 @@
+plugin.tx_t3download {
+	view {
+		# cat=plugin.tx_t3download/file; type=string; label=Path to template root (FE)
+		templateRootPath = EXT:t3download/Resources/Private/Templates/
+		# cat=plugin.tx_t3download/file; type=string; label=Path to template partials (FE)
+		partialRootPath = EXT:t3download/Resources/Private/Partials/
+		# cat=plugin.tx_t3download/file; type=string; label=Path to template layouts (FE)
+		layoutRootPath = EXT:t3download/Resources/Private/Layouts/
+	}
+	persistence {
+		# cat=plugin.tx_t3download//a; type=string; label=Default storage PID
+		storagePid =
+	}
+}

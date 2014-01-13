@@ -43,5 +43,21 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
 	 */
 	protected $downloadConfigurationRepository;
 
+	/**
+	 * action list
+	 *
+	 * @return void
+	 */
+	public function listAction() {
+		$downloadConfigurations = $this->downloadConfigurationRepository->findAll();
+		$this->view->assign('downloadConfigurations', $downloadConfigurations);
+        
+        if (is_object($serviceObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstanceService('fileService'))) {
+            
+            $fileService = $serviceObj->createDownloadConfiguration(array());
+            \Tx_ExtDebug::var_dump($fileService);
+        }
+	}
+
 }
 ?>

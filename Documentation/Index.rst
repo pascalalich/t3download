@@ -18,7 +18,7 @@ Extension Name
 :Language: en
 :Author: Tomita Militaru, Pascal Alich
 :Creation: 2014-01-13
-:Generation: 20:39
+:Generation: 21:16
 :Licence: Open Content License available from `www.opencontent.org/opl.shtml <http://www.opencontent.org/opl.shtml>`_
 
 The content of this document is related to TYPO3, a GNU/GPL CMS/Framework available from `www.typo3.org
