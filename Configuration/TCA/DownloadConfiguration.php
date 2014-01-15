@@ -96,14 +96,7 @@ $TCA['tx_t3download_domain_model_downloadconfiguration'] = array(
 		'file_references' => array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:t3download/Resources/Private/Language/locallang_db.xlf:tx_t3download_domain_model_downloadconfiguration.file_references',
-			'config' => array(
-				'type' => 'group',
-				'internal_type' => 'file_reference',
-				'uploadfolder' => 'uploads/tx_t3download',
-				'allowed' => '*',
-				'disallowed' => 'php',
-				'size' => 5,
-			),
+			'config' => TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('file_references', array(), 'mp3', 'php')
 		),
 		'valid_date' => array(
 			'exclude' => 0,
@@ -116,6 +109,8 @@ $TCA['tx_t3download_domain_model_downloadconfiguration'] = array(
 				'default' => time()
 			),
 		),
+        // @TODO: There's a known bug with internal_type=folder
+        // For TYPO3 6.1.x the following patch must be applied: https://review.typo3.org/#/c/26720/
 		'folder_references' => array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:t3download/Resources/Private/Language/locallang_db.xlf:tx_t3download_domain_model_downloadconfiguration.folder_references',
@@ -123,6 +118,7 @@ $TCA['tx_t3download_domain_model_downloadconfiguration'] = array(
 				'type' => 'group',
 				'internal_type' => 'folder',
 				'size' => 5,
+                'maxitems' => 999
 			),
 		),
 	),
