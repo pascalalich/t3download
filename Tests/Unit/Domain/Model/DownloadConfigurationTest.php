@@ -83,27 +83,17 @@ class DownloadConfigurationTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCa
 	/**
 	 * @test
 	 */
-	public function getIsDirectoryReturnsInitialValueForOolean() { }
+	public function getFolderReferencesReturnsInitialValueForString() { }
 
 	/**
 	 * @test
 	 */
-	public function setIsDirectoryForOoleanSetsIsDirectory() { }
-	
-	/**
-	 * @test
-	 */
-	public function getDirectoryPathReturnsInitialValueForString() { }
-
-	/**
-	 * @test
-	 */
-	public function setDirectoryPathForStringSetsDirectoryPath() { 
-		$this->fixture->setDirectoryPath('Conceived at T3CON10');
+	public function setFolderReferencesForStringSetsFolderReferences() { 
+		$this->fixture->setFolderReferences('Conceived at T3CON10');
 
 		$this->assertSame(
 			'Conceived at T3CON10',
-			$this->fixture->getDirectoryPath()
+			$this->fixture->getFolderReferences()
 		);
 	}
 	

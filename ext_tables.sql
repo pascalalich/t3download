@@ -8,8 +8,7 @@ CREATE TABLE tx_t3download_domain_model_downloadconfiguration (
 
 	file_references text NOT NULL,
 	valid_date int(11) DEFAULT '0' NOT NULL,
-	is_directory tinyint(1) unsigned DEFAULT '0' NOT NULL,
-	directory_path varchar(255) DEFAULT '' NOT NULL,
+	folder_references text NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,

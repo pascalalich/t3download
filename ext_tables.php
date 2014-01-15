@@ -34,7 +34,7 @@ $TCA['tx_t3download_domain_model_downloadconfiguration'] = array(
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 		),
-		'searchFields' => 'file_references,valid_date,is_directory,directory_path,',
+		'searchFields' => 'file_references,valid_date,folder_references,',
 		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/TCA/DownloadConfiguration.php',
 		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_t3download_domain_model_downloadconfiguration.gif'
 	),

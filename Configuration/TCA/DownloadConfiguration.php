@@ -6,10 +6,10 @@ if (!defined ('TYPO3_MODE')) {
 $TCA['tx_t3download_domain_model_downloadconfiguration'] = array(
 	'ctrl' => $TCA['tx_t3download_domain_model_downloadconfiguration']['ctrl'],
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, file_references, valid_date, is_directory, directory_path',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, file_references, valid_date, folder_references',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, file_references, valid_date, is_directory, directory_path,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, file_references, valid_date, folder_references,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -110,27 +110,19 @@ $TCA['tx_t3download_domain_model_downloadconfiguration'] = array(
 			'label' => 'LLL:EXT:t3download/Resources/Private/Language/locallang_db.xlf:tx_t3download_domain_model_downloadconfiguration.valid_date',
 			'config' => array(
 				'type' => 'input',
-				'size' => 7,
-				'eval' => 'date',
+				'size' => 10,
+				'eval' => 'datetime',
 				'checkbox' => 1,
 				'default' => time()
 			),
 		),
-		'is_directory' => array(
+		'folder_references' => array(
 			'exclude' => 0,
-			'label' => 'LLL:EXT:t3download/Resources/Private/Language/locallang_db.xlf:tx_t3download_domain_model_downloadconfiguration.is_directory',
+			'label' => 'LLL:EXT:t3download/Resources/Private/Language/locallang_db.xlf:tx_t3download_domain_model_downloadconfiguration.folder_references',
 			'config' => array(
-				'type' => 'check',
-				'default' => 0
-			),
-		),
-		'directory_path' => array(
-			'exclude' => 0,
-			'label' => 'LLL:EXT:t3download/Resources/Private/Language/locallang_db.xlf:tx_t3download_domain_model_downloadconfiguration.directory_path',
-			'config' => array(
-				'type' => 'input',
-				'size' => 30,
-				'eval' => 'trim'
+				'type' => 'group',
+				'internal_type' => 'folder',
+				'size' => 5,
 			),
 		),
 	),

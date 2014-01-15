@@ -51,18 +51,11 @@ class DownloadConfiguration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEnti
 	protected $validDate;
 
 	/**
-	 * Is directory
-	 *
-	 * @var boolean
-	 */
-	protected $isDirectory = FALSE;
-
-	/**
-	 * Directory path
+	 * Directory references
 	 *
 	 * @var \string
 	 */
-	protected $directoryPath;
+	protected $folderReferences;
 
 	/**
 	 * Returns the fileReferences
@@ -103,50 +96,22 @@ class DownloadConfiguration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEnti
 	}
 
 	/**
-	 * Returns the isDirectory
+	 * Returns the folderReferences
 	 *
-	 * @return boolean $isDirectory
+	 * @return \string $folderReferences
 	 */
-	public function getIsDirectory() {
-		return $this->isDirectory;
+	public function getFolderReferences() {
+		return $this->folderReferences;
 	}
 
 	/**
-	 * Sets the isDirectory
+	 * Sets the folderReferences
 	 *
-	 * @param boolean $isDirectory
+	 * @param \string $folderReferences
 	 * @return void
 	 */
-	public function setIsDirectory($isDirectory) {
-		$this->isDirectory = $isDirectory;
-	}
-
-	/**
-	 * Returns the boolean state of isDirectory
-	 *
-	 * @return boolean
-	 */
-	public function isIsDirectory() {
-		return $this->getIsDirectory();
-	}
-
-	/**
-	 * Returns the directoryPath
-	 *
-	 * @return \string $directoryPath
-	 */
-	public function getDirectoryPath() {
-		return $this->directoryPath;
-	}
-
-	/**
-	 * Sets the directoryPath
-	 *
-	 * @param \string $directoryPath
-	 * @return void
-	 */
-	public function setDirectoryPath($directoryPath) {
-		$this->directoryPath = $directoryPath;
+	public function setFolderReferences($folderReferences) {
+		$this->folderReferences = $folderReferences;
 	}
 
 }
