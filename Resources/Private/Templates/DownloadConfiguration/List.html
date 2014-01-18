@@ -27,7 +27,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 	<f:for each="{downloadConfigurations}" as="downloadConfiguration">
 		<tr>
-			<td><f:link.action action="show" arguments="{downloadConfiguration : downloadConfiguration}"> {downloadConfiguration.fileReferences}</f:link.action></td>
+			<td><f:link.action action="show" arguments="{downloadConfiguration : downloadConfiguration}"> {downloadConfiguration.fileReferences -> f:count()}</f:link.action></td>
 			<td><f:link.action action="show" arguments="{downloadConfiguration : downloadConfiguration}"> {downloadConfiguration.validDate -> f:format.date()}</f:link.action></td>
 			<td><f:link.action action="show" arguments="{downloadConfiguration : downloadConfiguration}"> {downloadConfiguration.folderReferences}</f:link.action></td>
 			<td><f:link.action action="edit" arguments="{downloadConfiguration : downloadConfiguration}">Edit</f:link.action></td>
