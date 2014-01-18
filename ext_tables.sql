@@ -6,8 +6,8 @@ CREATE TABLE tx_t3download_domain_model_downloadconfiguration (
 	uid int(11) NOT NULL auto_increment,
 	pid int(11) DEFAULT '0' NOT NULL,
 
-	file_references text NOT NULL,
-	valid_date int(11) DEFAULT '0' NOT NULL,
+	file_references int(11) unsigned DEFAULT '0' NOT NULL,
+	valid_date int(11) unsigned DEFAULT '0' NOT NULL,
 	folder_references text NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
