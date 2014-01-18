@@ -13,6 +13,10 @@ plugin.tx_t3download {
 	}
 }
 
+config.tx_extbase.persistence.classes {
+    TYPO3\CMS\Core\Resource\FileReference.mapping.tableName = sys_file_reference
+}
+
 plugin.tx_t3download._CSS_DEFAULT_STYLE (
 	textarea.f3-form-error {
 		background-color:#FF9F9F;
