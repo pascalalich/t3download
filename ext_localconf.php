@@ -17,4 +17,18 @@ if (!defined('TYPO3_MODE')) {
 	)
 );
 
+t3lib_extMgm::addService($_EXTKEY, 'fileService', 'tx_t3download_sv1',
+                array(
+                        'title' => 'Dowload Configuration service',
+                        'description' => 'Used to create a download configuration',
+                        'subtype' => '',
+                        'available' => true,
+                        'priority' => 60,
+                        'quality' => 80,
+                        'os' => '',
+                        'exec' => '',
+                        'className' => 'TYPO3\T3download\Service\FileService',
+                )
+        );
+
 ?>
