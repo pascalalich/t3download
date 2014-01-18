@@ -37,12 +37,19 @@ namespace TYPO3\T3download\Service;
 class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
     
     /**
-     * The download configuration repository
+     * downloadConfigurationRepository
      * 
-     * @var TYPO3\T3download\Domain\Repository\DownloadConfigurationRepository;
-     * @inject
+     * @var \TYPO3\T3download\Domain\Repository\DownloadConfigurationRepository
      */
     protected $downloadConfigurationRepository;
+    
+    /**
+     * objectManager
+     * 
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
+     * @inject
+     */
+    protected $objectManager;
     
     /**
      * Create a download configuration
@@ -56,21 +63,32 @@ class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
      */
     public function createDownloadConfiguration($fileReferences, $validDate = 0, $isDirectory = false, $directoryPath = '') {
         $downloadConfiguration = null;
+        
+        $this->downloadConfigurationRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\T3download\\Domain\\Repository\\DownloadConfigurationRepository');
+        $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        
         if (count($fileReferences) > 0 && $this->checkFileReferences($fileReferences) && $isDirectory === false) {
-            $downloadConfiguration = TYPO3\CMS\Extbase\Object\ObjectManager::get('\TYPO3\T3download\Domain\Model\DownloadConfiguration');
-            $downloadConfiguration->setFileReferences(serialize($fileReferences));
+            $downloadConfiguration = $this->objectManager->get('TYPO3\\T3download\\Domain\\Model\\DownloadConfiguration');
+            foreach($fileReferences as $fileReferences) {
+                // @TODO: convert to \TYPO3\CMS\Extbase\Domain\Model\FileReference
+                $newFileReference = $this->objectManager->get('\TYPO3\CMS\Extbase\Domain\Model\FileReference');
+                
+                $downloadConfiguration->addFileReference($fileReferences);
+            }
             $downloadConfiguration->setValidDate($validDate);            
         } else if ($isDirectory === true && $directoryPath !== '' && is_dir(PATH_site . $directoryPath)) {
-            $downloadConfiguration = TYPO3\CMS\Extbase\Object\ObjectManager::get('\TYPO3\T3download\Domain\Model\DownloadConfiguration');
+            $downloadConfiguration = $this->objectManager->get('\TYPO3\T3download\Domain\Model\DownloadConfiguration');
             $downloadConfiguration->setIsDirectory(true);
             $downloadConfiguration->setDirectoryPath($directoryPath);
         } else {
+            \Tx_ExtDebug::var_dump('Check failed!');
             return false;
         }
         
         if ($downloadConfiguration !== null) {
             $this->downloadConfigurationRepository->add($downloadConfiguration);
         } else {
+            \Tx_ExtDebug::var_dump('Download configuration null');
             return false;
         }
         
@@ -86,9 +104,10 @@ class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
      */
     protected function checkFileReferences($fileReferences) {
         foreach ($fileReferences as $fileReference) {
-            if ($fileReference instanceof \TYPO3\CMS\Extbase\Domain\Model\FileReference) {
+            if ($fileReference instanceof \TYPO3\CMS\Core\Resource\FileReference) {
                 continue;
             }
+            \Tx_ExtDebug::var_dump(get_class($fileReference));
             return false;
         }
         
