@@ -1,7 +1,8 @@
 <?php
+
 namespace TYPO3\T3download\Controller;
 
-/***************************************************************
+/* * *************************************************************
  *  Copyright notice
  *
  *  (c) 2014 Tomita Militaru <mail@tomitamilitaru.com>
@@ -24,7 +25,7 @@ namespace TYPO3\T3download\Controller;
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * ************************************************************* */
 
 /**
  *
@@ -35,29 +36,37 @@ namespace TYPO3\T3download\Controller;
  */
 class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 
-	/**
-	 * downloadConfigurationRepository
-	 *
-	 * @var \TYPO3\T3download\Domain\Repository\DownloadConfigurationRepository
-	 * @inject
-	 */
-	protected $downloadConfigurationRepository;
+    /**
+     * downloadConfigurationRepository
+     *
+     * @var \TYPO3\T3download\Domain\Repository\DownloadConfigurationRepository
+     * @inject
+     */
+    protected $downloadConfigurationRepository;
 
-	/**
-	 * action list
-	 *
-	 * @return void
-	 */
-	public function listAction() {
-		$downloadConfigurations = $this->downloadConfigurationRepository->findAll();
-		$this->view->assign('downloadConfigurations', $downloadConfigurations);
+    /**
+     * action list
+     *
+     * @return void
+     */
+    public function listAction() {
+        $downloadConfigurations = $this->downloadConfigurationRepository->findAll();
+        
+        $this->view->assign('downloadConfigurations', $downloadConfigurations);
+
+        // Get file from a track
+        $uid = 1; // Track UID
+        
+        $fileRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
+        $fileObjects = $fileRepository->findByRelation('tx_t3music_domain_model_track', 'full_file', $uid);
         
         if (is_object($serviceObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstanceService('fileService'))) {
-            
-            $fileService = $serviceObj->createDownloadConfiguration(array());
-            \Tx_ExtDebug::var_dump($fileService);
+
+            $fileService = $serviceObj->createDownloadConfiguration($fileObjects, time() + 31556926);            
+
         }
-	}
+    }
 
 }
+
 ?>
