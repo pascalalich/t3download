@@ -84,9 +84,9 @@ class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
      * 
      * @return boolean Returns TRUE if all references are valid, FALSE otherwise.
      */
-    protected function checkFileReferences(array $fileReferences) {
+    protected function checkFileReferences($fileReferences) {
         foreach ($fileReferences as $fileReference) {
-            if (is_file(PATH_site . $fileReference)) {
+            if ($fileReference instanceof \TYPO3\CMS\Extbase\Domain\Model\FileReference) {
                 continue;
             }
             return false;
@@ -102,7 +102,7 @@ class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
      * 
      * @return void
      */
-    public function download($securedString) {
+    public function downloadAction($securedString) {
         
     }
 }
