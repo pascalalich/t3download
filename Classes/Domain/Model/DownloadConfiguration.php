@@ -1,7 +1,8 @@
 <?php
+
 namespace TYPO3\T3download\Domain\Model;
 
-/***************************************************************
+/* * *************************************************************
  *  Copyright notice
  *
  *  (c) 2014 Tomita Militaru <mail@tomitamilitaru.com>
@@ -24,7 +25,7 @@ namespace TYPO3\T3download\Domain\Model;
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
+ * ************************************************************* */
 
 /**
  *
@@ -35,84 +36,121 @@ namespace TYPO3\T3download\Domain\Model;
  */
 class DownloadConfiguration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 
-	/**
-	 * File references
-	 *
-	 * @var \string
-	 * @validate NotEmpty
-	 */
-	protected $fileReferences;
+    /**
+     * File references
+     *
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
+     * @validate NotEmpty
+     */
+    protected $fileReferences;
 
-	/**
-	 * validDate
-	 *
-	 * @var \DateTime
-	 */
-	protected $validDate;
+    /**
+     * validDate
+     *
+     * @var \DateTime
+     */
+    protected $validDate;
 
-	/**
-	 * Directory references
-	 *
-	 * @var \string
-	 */
-	protected $folderReferences;
+    /**
+     * Directory references
+     *
+     * @var \string
+     */
+    protected $folderReferences;
 
-	/**
-	 * Returns the fileReferences
-	 *
-	 * @return \string $fileReferences
-	 */
-	public function getFileReferences() {
-		return $this->fileReferences;
-	}
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        $this->initStorageObjects();
+    }
 
-	/**
-	 * Sets the fileReferences
-	 *
-	 * @param \string $fileReferences
-	 * @return void
-	 */
-	public function setFileReferences($fileReferences) {
-		$this->fileReferences = $fileReferences;
-	}
+    /**
+     * Initializes all \TYPO3\CMS\Extbase\Persistence\ObjectStorage properties.
+     *
+     * @return void
+     */
+    protected function initStorageObjects() {
+        $this->fileReferences = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+    }
 
-	/**
-	 * Returns the validDate
-	 *
-	 * @return \DateTime $validDate
-	 */
-	public function getValidDate() {
-		return $this->validDate;
-	}
+    /**
+     * Returns the fileReferences
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference> $fileReferences
+     */
+    public function getFileReferences() {
+        return $this->fileReferences;
+    }
 
-	/**
-	 * Sets the validDate
-	 *
-	 * @param \DateTime $validDate
-	 * @return void
-	 */
-	public function setValidDate($validDate) {
-		$this->validDate = $validDate;
-	}
+    /**
+     * Sets the fileReferences
+     *
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference> $fileReferences
+     * @return void
+     */
+    public function setFileReferences($fileReferences) {
+        $this->fileReferences = $fileReferences;
+    }
 
-	/**
-	 * Returns the folderReferences
-	 *
-	 * @return \string $folderReferences
-	 */
-	public function getFolderReferences() {
-		return $this->folderReferences;
-	}
+    /**
+     * Add file reference
+     * 
+     * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $fileReference
+     * @return void
+     */
+    public function addFileReference($fileReference) {
+        $this->fileReferences->attach($fileReference);
+    }
 
-	/**
-	 * Sets the folderReferences
-	 *
-	 * @param \string $folderReferences
-	 * @return void
-	 */
-	public function setFolderReferences($folderReferences) {
-		$this->folderReferences = $folderReferences;
-	}
+    /**
+     * Remove file reference
+     * 
+     * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference $fileReference
+     * @return void
+     */
+    public function removeFileReference($fileReference) {
+        $this->fileReferences->remove($fileReference);
+    }
+
+    /**
+     * Returns the validDate
+     *
+     * @return \DateTime $validDate
+     */
+    public function getValidDate() {
+        return $this->validDate;
+    }
+
+    /**
+     * Sets the validDate
+     *
+     * @param \DateTime $validDate
+     * @return void
+     */
+    public function setValidDate($validDate) {
+        $this->validDate = $validDate;
+    }
+
+    /**
+     * Returns the folderReferences
+     *
+     * @return \string $folderReferences
+     */
+    public function getFolderReferences() {
+        return $this->folderReferences;
+    }
+
+    /**
+     * Sets the folderReferences
+     *
+     * @param \string $folderReferences
+     * @return void
+     */
+    public function setFolderReferences($folderReferences) {
+        $this->folderReferences = $folderReferences;
+    }
 
 }
+
 ?>
