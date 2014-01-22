@@ -57,6 +57,13 @@ class DownloadConfiguration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEnti
      * @var \string
      */
     protected $folderReferences;
+    
+    /**
+     * External id
+     * 
+     * @var \string
+     */
+    protected $externalId;
 
     /**
      * Constructor.
@@ -150,6 +157,28 @@ class DownloadConfiguration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEnti
     public function setFolderReferences($folderReferences) {
         $this->folderReferences = $folderReferences;
     }
+    
+    /**
+     * Get external id
+     * 
+     * @return string 
+     */
+    public function getExternalId() {
+        return $this->externalId;
+    }
+
+    /**
+     * Set external id
+     * 
+     * @param \string $externalId The external id
+     * 
+     * @return void
+     */
+    public function setExternalId(\string $externalId) {
+        $this->externalId = $externalId;
+    }
+
+
 
 }
 

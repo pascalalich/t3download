@@ -16,6 +16,9 @@
 			<trans-unit id="tx_t3download_domain_model_downloadconfiguration.folder_references">
 				<source>Folder References</source>
 			</trans-unit>
+                        <trans-unit id="tx_t3download_domain_model_downloadconfiguration.external_id">
+				<source>External ID</source>
+			</trans-unit>
 
 		</body>
 	</file>

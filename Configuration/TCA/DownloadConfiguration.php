@@ -121,6 +121,13 @@ $TCA['tx_t3download_domain_model_downloadconfiguration'] = array(
                 'maxitems' => 999
 			),
 		),
+        'external_id' => array(
+			'label' => 'LLL:EXT:t3download/Resources/Private/Language/locallang_db.xlf:tx_t3download_domain_model_downloadconfiguration.external_id',
+			'config' => array(
+				'type' => 'input',
+				'size' => 30,				
+			)
+		),
 	),
 );
 
