@@ -1,0 +1,28 @@
+407c407
+< 						$this->insertObject($propertyValue);
+---
+> 						$this->insertObject($propertyValue, $object, $propertyName);
+594a595,598
+>             $relationTableMatchFields = $parentColumnMap->getRelationTableMatchFields();	
+>             if (is_array($relationTableMatchFields) && count($relationTableMatchFields) ) {
+>                 $row = array_merge($relationTableMatchFields, $row);
+>             }
+641a646,648
+>      * @param \TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface $parentObject The parentobject
+>      * @param string $parentPropertyName
+>      * 
+644c651
+< 	protected function insertObject(\TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface $object) {
+---
+> 	protected function insertObject(\TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface $object, \TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface $parentObject = NULL, $parentPropertyName = '') {
+657a665,674
+>         if ($parentObject !== NULL && $parentPropertyName) {
+>             $parentColumnDataMap = $this->dataMapper->getDataMap(get_class($parentObject))->getColumnMap($parentPropertyName);	
+>             $relationTableMatchFields = $parentColumnDataMap->getRelationTableMatchFields();	
+>             if (is_array($relationTableMatchFields) && count($relationTableMatchFields) > 0) {	
+>                 $row = array_merge($relationTableMatchFields, $row);	
+>             }	
+>             if ($parentColumnDataMap->getParentKeyFieldName() !== NULL) {	
+>                 $row[$parentColumnDataMap->getParentKeyFieldName()] = (int)$parentObject->getUid();	
+>             }	
+>         }
