@@ -40,7 +40,6 @@ class DownloadConfiguration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEnti
      * File references
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
-     * @validate NotEmpty
      */
     protected $fileReferences;
 
@@ -174,11 +173,20 @@ class DownloadConfiguration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEnti
      * 
      * @return void
      */
-    public function setExternalId(\string $externalId) {
+    public function setExternalId($externalId) {
         $this->externalId = $externalId;
     }
 
-
+    /**
+     * Get secured UUID
+     * 
+     * @param integer $uid The uid
+     * 
+     * return string
+     */
+    public function getSecuredUuid($uid) {
+        return md5($uid); 
+    }
 
 }
 
