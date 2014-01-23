@@ -18,20 +18,15 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 <table  class="tx_t3download" >
 	<tr>
-		<th><f:translate key="tx_t3download_domain_model_downloadconfiguration.file_references" /></th>
 		<th><f:translate key="tx_t3download_domain_model_downloadconfiguration.valid_date" /></th>
-		<th><f:translate key="tx_t3download_domain_model_downloadconfiguration.folder_references" /></th>
-		<th> </th>
 		<th> </th>
 	</tr>
 
 	<f:for each="{downloadConfigurations}" as="downloadConfiguration">
 		<tr>
-			<td><f:link.action action="show" arguments="{downloadConfiguration : downloadConfiguration}"> {downloadConfiguration.fileReferences -> f:count()}</f:link.action></td>
+			
 			<td><f:link.action action="show" arguments="{downloadConfiguration : downloadConfiguration}"> {downloadConfiguration.validDate -> f:format.date()}</f:link.action></td>
-			<td><f:link.action action="show" arguments="{downloadConfiguration : downloadConfiguration}"> {downloadConfiguration.folderReferences}</f:link.action></td>
-			<td><f:link.action action="edit" arguments="{downloadConfiguration : downloadConfiguration}">Edit</f:link.action></td>
-			<td><f:link.action action="delete" arguments="{downloadConfiguration : downloadConfiguration}">Delete</f:link.action></td>
+			<td><f:link.action action="download" arguments="{download : downloadConfiguration.securedUuid}">Download</f:link.action></td>
 		</tr>
 	</f:for>
 </table>
