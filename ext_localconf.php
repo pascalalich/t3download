@@ -7,12 +7,12 @@ if (!defined('TYPO3_MODE')) {
 	'TYPO3.' . $_EXTKEY,
 	'Download',
 	array(
-		'DownloadConfiguration' => 'list',
+		'DownloadConfiguration' => 'list, download',
 		
 	),
 	// non-cacheable actions
 	array(
-		'DownloadConfiguration' => 'list',
+		'DownloadConfiguration' => 'list, download',
 		
 	)
 );
