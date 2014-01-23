@@ -1,7 +1,7 @@
 <?php
 
 namespace TYPO3\T3download\Controller;
-
+require \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3download') . 'Resources/Private/ZipStreamPHP/zipstream.php';
 /* * *************************************************************
  *  Copyright notice
  *
@@ -49,22 +49,87 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
      *
      * @return void
      */
-    public function listAction() {
-        $downloadConfigurations = $this->downloadConfigurationRepository->findAll();
-        
-        $this->view->assign('downloadConfigurations', $downloadConfigurations);
+    public function listAction() {       
 
         // Get file from a track
-        $uid = 1; // Track UID
+        $uid = 1; // Track UID, insert here the UID of a track
         
+        
+        // How to get a full file from a track
         $fileRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
         $fileObjects = $fileRepository->findByRelation('tx_t3music_domain_model_track', 'full_file', $uid);
         
+        // Check if our service is available
         if (is_object($serviceObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstanceService('fileService'))) {
 
-            $fileService = $serviceObj->createDownloadConfiguration($fileObjects, time() + 31556926);            
+            // This is how you create a download configuration
+            //$serviceObj->createDownloadConfiguration($fileObjects, 'fileadmin/', time() + 31556926, '854bgfd');            
 
         }
+        
+        $downloadConfigurations = $this->downloadConfigurationRepository->findAll();        
+        $this->view->assign('downloadConfigurations', $downloadConfigurations);
+    }
+    
+    /**
+     * Download files
+     *  
+     * @return void
+     */
+    
+    public function downloadAction() {
+
+        $zip = new ZipStream('example.zip');
+        
+        $fileName = basename($file);
+
+        if (is_file($file)) {
+
+            $fileLen = filesize($file);
+            $ext = strtolower(substr(strrchr($fileName, '.'), 1));
+
+            switch ($ext) {
+                case 'zip':
+                    $cType = 'application/zip';
+                    break;
+
+                //forbidden filetypes
+                case 'inc':
+                case 'conf':
+                case 'sql':
+                case 'cgi':
+                case 'htaccess':
+                case 'php':
+                case 'php3':
+                case 'php4':
+                case 'php5':
+                    exit;
+
+                default:
+                    exit;
+                    break;
+            }
+
+            $headers = array(
+                'Pragma' => 'public',
+                'Expires' => 0,
+                'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+                'Cache-Control' => 'public',
+                'Content-Description' => 'File Transfer',
+                'Content-Type' => $cType,
+                'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+                'Content-Transfer-Encoding' => 'binary',
+                'Content-Length' => $fileLen
+            );
+
+            foreach ($headers as $header => $data) {
+                $this->response->setHeader($header, $data);
+            }
+
+            $this->response->sendHeaders();
+            @readfile($file);
+        }
+        exit;
     }
 
 }
