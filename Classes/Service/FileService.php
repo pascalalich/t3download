@@ -54,32 +54,31 @@ class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
     /**
      * Create a download configuration
      * 
-     * @param array   $fileReferences File / folder references
-     * @param int     $validDate      An UNIX valid date (optional)
-     * @param boolean $isDirectory    Is directory?
-     * @param string  $directoryPath  The directory path (eg. fileadmin/path/album/)
+     * @param array   $fileReferences   File references
+     * @param string  $folderReferences Folder references
+     * @param int     $validDate        An UNIX valid date (optional)
+     * @param string  $externalId       Extenal ID
      * 
      * @return string The secured download URL or FALSE if invalid file references are found
      */
-    public function createDownloadConfiguration($fileReferences, $validDate = 0, $isDirectory = false, $directoryPath = '') {
+    public function createDownloadConfiguration($fileReferences, $folderReferences = '', $validDate = 0, $externalId = '') {
         $downloadConfiguration = null;
         
         $this->downloadConfigurationRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\T3download\\Domain\\Repository\\DownloadConfigurationRepository');
         $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         
-        if (count($fileReferences) > 0 && $this->checkFileReferences($fileReferences) && $isDirectory === false) {
+        if (count($fileReferences) > 0 && $this->checkFileReferences($fileReferences)) {
             $downloadConfiguration = $this->objectManager->get('TYPO3\\T3download\\Domain\\Model\\DownloadConfiguration');
             foreach($fileReferences as $fileReferences) {
-                // @TODO: convert to \TYPO3\CMS\Extbase\Domain\Model\FileReference
-                $newFileReference = $this->objectManager->get('\TYPO3\CMS\Extbase\Domain\Model\FileReference');
+                $newFileReference = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Domain\\Model\\FileReference');
+                $newFileReference->setOriginalResource($fileReferences);
                 
-                $downloadConfiguration->addFileReference($fileReferences);
+                $downloadConfiguration->addFileReference($newFileReference);
+                $downloadConfiguration->setFolderReferences($folderReferences);
+                $downloadConfiguration->setExternalId($externalId);
             }
-            $downloadConfiguration->setValidDate($validDate);            
-        } else if ($isDirectory === true && $directoryPath !== '' && is_dir(PATH_site . $directoryPath)) {
-            $downloadConfiguration = $this->objectManager->get('\TYPO3\T3download\Domain\Model\DownloadConfiguration');
-            $downloadConfiguration->setIsDirectory(true);
-            $downloadConfiguration->setDirectoryPath($directoryPath);
+            
+            $downloadConfiguration->setValidDate($validDate);
         } else {
             \Tx_ExtDebug::var_dump('Check failed!');
             return false;
@@ -107,21 +106,10 @@ class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
             if ($fileReference instanceof \TYPO3\CMS\Core\Resource\FileReference) {
                 continue;
             }
-            \Tx_ExtDebug::var_dump(get_class($fileReference));
             return false;
         }
         
         return true;
-    }
+    }   
     
-    /**
-     * Download files
-     * 
-     * @param string $securedString A secured string
-     * 
-     * @return void
-     */
-    public function downloadAction($securedString) {
-        
-    }
 }
