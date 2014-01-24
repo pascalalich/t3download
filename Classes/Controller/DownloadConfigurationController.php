@@ -79,7 +79,43 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
     
     public function downloadAction() {
 
-        $zip = new ZipStream('example.zip');
+        $securedUuid = $this->request->getArgument('download');
+        
+        if ($securedUuid == '') {
+            exit;
+        }
+        
+        $zip = new \ZipStream('example.zip');
+        
+        $downloadConfiguration = $this->downloadConfigurationRepository->findBySecuredUuid($securedUuid);
+       
+        if ($downloadConfiguration === null) {
+            exit;
+        } else {
+            $fileReferences = $downloadConfiguration->getFileReferences();
+            $folderReferences = $downloadConfiguration->getFolderReferences();
+            $validDate = $downloadConfiguration->getValidDate();
+            
+            if ($validDate === null || time() > $validDate->getTimestamp()) {
+                exit;
+            }
+            
+            foreach($fileReferences as $fileReference) {
+                $file = $fileReference->getOriginalResource()->getOriginalFile();
+                $zip->add_file_from_path($file->getName(), PATH_site . 'fileadmin' . $file->getIdentifier());
+            }
+            
+            if ($folderReferences !== '') {
+                $directories = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $folderReferences);
+                foreach($directories as $directory) {
+                    $files = scandir(PATH_site . $directory);
+                    foreach($files as $file) {
+                        $zip->add_file_from_path($file, PATH_site . $directory . $file);
+                    }
+                }
+            }
+            $zip->finish();
+        }
         
         $fileName = basename($file);
 
