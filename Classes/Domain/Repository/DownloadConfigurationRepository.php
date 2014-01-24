@@ -34,6 +34,19 @@ namespace TYPO3\T3download\Domain\Repository;
  *
  */
 class DownloadConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
-
+    
+    /**
+     * Find by secured UUID
+     * 
+     * @param string $securedUuid The secured Uuid
+     * 
+     * @return object
+     */
+    public function findBySecuredUuid($securedUuid) {
+        $query = $this->createQuery();
+        $query->statement('SELECT * FROM `tx_t3download_domain_model_downloadconfiguration` WHERE MD5(`uid`) = \'' . $securedUuid . '\'');
+        
+        return $query->execute()->getFirst();
+    }
 }
 ?>
