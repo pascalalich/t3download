@@ -200,7 +200,7 @@ class DownloadConfiguration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEnti
      * 
      * @return void
      */
-    public function setHash(\string $hash) {
+    public function setHash($hash) {
         $this->hash = $hash;
     }
 
