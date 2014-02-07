@@ -75,10 +75,13 @@ class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
                 
                 $downloadConfiguration->addFileReference($newFileReference);
                 $downloadConfiguration->setFolderReferences($folderReferences);
-                $downloadConfiguration->setExternalId($externalId);
+                $downloadConfiguration->setExternalId($externalId);                                
             }
             
+            $hash = crypt($downloadConfiguration->getUid(), $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
+            $downloadConfiguration->setHash($hash);            
             $downloadConfiguration->setValidDate($validDate);
+            
         } else {
             \Tx_ExtDebug::var_dump('Check failed!');
             return false;
