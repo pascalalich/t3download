@@ -44,7 +44,7 @@ class DownloadConfigurationRepository extends \TYPO3\CMS\Extbase\Persistence\Rep
      */
     public function findBySecuredUuid($securedUuid) {
         $query = $this->createQuery();
-        $query->statement('SELECT * FROM `tx_t3download_domain_model_downloadconfiguration` WHERE MD5(`uid`) = \'' . $securedUuid . '\'');
+        $query->statement('SELECT * FROM `tx_t3download_domain_model_downloadconfiguration` WHERE hash = \'' . $securedUuid . '\'');
         
         return $query->execute()->getFirst();
     }
