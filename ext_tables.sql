@@ -10,6 +10,7 @@ CREATE TABLE tx_t3download_domain_model_downloadconfiguration (
 	valid_date int(11) unsigned DEFAULT '0' NOT NULL,
 	folder_references text NOT NULL,
         external_id varchar(255) DEFAULT '' NOT NULL,
+        hash text NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,

@@ -63,6 +63,13 @@ class DownloadConfiguration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEnti
      * @var \string
      */
     protected $externalId;
+    
+    /**
+     * Secure hash
+     * 
+     * @var \string
+     */
+    protected $hash;
 
     /**
      * Constructor.
@@ -176,16 +183,25 @@ class DownloadConfiguration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEnti
     public function setExternalId($externalId) {
         $this->externalId = $externalId;
     }
+    
+    /**
+     * Get hash
+     * 
+     * @return string
+     */
+    public function getHash() {
+        return $this->hash;
+    }
 
     /**
-     * Get secured UUID
+     * Set hash
      * 
-     * @param integer $uid The uid
+     * @param \string $hash The hash string
      * 
-     * return string
+     * @return void
      */
-    public function getSecuredUuid($uid) {
-        return md5($uid); 
+    public function setHash(\string $hash) {
+        $this->hash = $hash;
     }
 
 }

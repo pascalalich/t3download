@@ -128,6 +128,12 @@ $TCA['tx_t3download_domain_model_downloadconfiguration'] = array(
 				'size' => 30,				
 			)
 		),
+        'hash' => array(
+            'label' => 'LLL:EXT:t3download/Resources/Private/Language/locallang_db.xlf:tx_t3download_domain_model_downloadconfiguration.hash',
+            'config' => array(
+                'type' => 'text'
+            )
+        )
 	),
 );
 
