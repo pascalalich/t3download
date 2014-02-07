@@ -50,22 +50,6 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
      * @return void
      */
     public function listAction() {       
-
-        // Get file from a track
-        $uid = 1; // Track UID, insert here the UID of a track
-        
-        
-        // How to get a full file from a track
-        $fileRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
-        $fileObjects = $fileRepository->findByRelation('tx_t3music_domain_model_track', 'full_file', $uid);
-        
-        // Check if our service is available
-        if (is_object($serviceObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstanceService('fileService'))) {
-
-            // This is how you create a download configuration
-            //$serviceObj->createDownloadConfiguration($fileObjects, 'fileadmin/', time() + 31556926, '854bgfd');            
-
-        }
         
         $downloadConfigurations = $this->downloadConfigurationRepository->findAll();        
         $this->view->assign('downloadConfigurations', $downloadConfigurations);
@@ -88,7 +72,7 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
         $zip = new \ZipStream('example.zip');
         
         $downloadConfiguration = $this->downloadConfigurationRepository->findBySecuredUuid($securedUuid);
-       
+        
         if ($downloadConfiguration === null) {
             exit;
         } else {
@@ -101,6 +85,7 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
             }
             
             foreach($fileReferences as $fileReference) {
+                \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($fileReference);
                 $file = $fileReference->getOriginalResource()->getOriginalFile();
                 $zip->add_file_from_path($file->getName(), PATH_site . 'fileadmin' . $file->getIdentifier());
             }
@@ -166,6 +151,31 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
             @readfile($file);
         }
         exit;
+    }
+    
+    /**
+     * New action
+     * 
+     * @return void
+     */
+    public function newAction() {
+        // Get file from a track
+        $uid = 1; // Track UID, insert here the UID of a track
+        
+        
+        // How to get a full file from a track
+        $fileRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
+        $fileObjects = $fileRepository->findByRelation('tx_t3music_domain_model_track', 'full_file', $uid);
+        
+        // Check if our service is available
+        if (is_object($serviceObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstanceService('fileService'))) {
+
+            // This is how you create a download configuration
+            $serviceObj->createDownloadConfiguration($fileObjects, 'fileadmin/', time() + 31556926, '854bgfd');            
+            $this->flashMessageContainer->add('New download configuration created!');
+        }
+        
+        $this->redirect('list');
     }
 
 }
