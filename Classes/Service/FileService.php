@@ -67,18 +67,16 @@ class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
     /**
      * Create a download configuration
      * 
-     * @param array   $fileReferences   File references
-     * @param string  $folderReferences Folder references
+     * @param array   $files            Array of TYPO3\CMS\Core\Resource\File objects
      * @param int     $validDate        An UNIX valid date (optional)
      * @param string  $externalId       Extenal ID
      * 
      * @return string The secured download URL or FALSE if invalid file references are found
      */
-    public function createDownloadConfiguration($files, $folderReferences = '', $validDate = 0, $externalId = '') {
+    public function createDownloadConfiguration($files, $validDate = 0, $externalId = '') {
     	
     	$this->logger->info("creating download configuration via service", array (
     			'files' => count($files),
-    			'directories' => $folderReferences,
     			'validTo' => $validDate,
     			'externalId' => $externalId
     	));
