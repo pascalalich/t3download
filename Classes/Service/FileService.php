@@ -77,7 +77,7 @@ class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
     public function createDownloadConfiguration($files, $folderReferences = '', $validDate = 0, $externalId = '') {
     	
     	$this->logger->info("creating download configuration via service", array (
-    			'files' => $files,
+    			'files' => count($files),
     			'directories' => $folderReferences,
     			'validTo' => $validDate,
     			'externalId' => $externalId
@@ -85,8 +85,8 @@ class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
     	
         $downloadConfiguration = null;
         
-        $this->downloadConfigurationRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\T3download\\Domain\\Repository\\DownloadConfigurationRepository');
         $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $this->downloadConfigurationRepository = $this->objectManager->get('TYPO3\\T3download\\Domain\\Repository\\DownloadConfigurationRepository');
         $this->resourceFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\ResourceFactory');
         
         if (count($files) > 0 /*&& $this->checkFileReferences($files)*/) {
@@ -100,11 +100,12 @@ class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
                 //$downloadConfiguration->setFolderReferences($folderReferences);
             }
             
-            $hash = crypt($downloadConfiguration->getUid(), $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
-            $downloadConfiguration->setHash($hash);            
             $downloadConfiguration->setValidDate($validDate);
-                $downloadConfiguration->setExternalId($externalId);                                
-            
+            $downloadConfiguration->setExternalId($externalId);
+            $downloadPid = $this->getServiceOption('downloadPid');
+            if (!empty($downloadPid)) {
+	            $downloadConfiguration->setPid(intval($downloadPid));
+            }
         } else {
             //\Tx_ExtDebug::var_dump('Check failed!');
 	    	$this->logger->error("invalid file references", array (
@@ -115,6 +116,11 @@ class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
         
         if ($downloadConfiguration !== null) {
             $this->downloadConfigurationRepository->add($downloadConfiguration);
+            $persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager');
+            $persistenceManager->persistAll();
+            $hash = crypt($downloadConfiguration->getUid(), $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
+            $downloadConfiguration->setHash($hash);
+            $this->downloadConfigurationRepository->update($downloadConfiguration);
         } else {
             //\Tx_ExtDebug::var_dump('Download configuration null');
             return false;
