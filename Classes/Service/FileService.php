@@ -23,7 +23,8 @@ namespace TYPO3\T3download\Service;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\FileReference;
 /**
  * File service
  *
@@ -36,6 +37,8 @@ namespace TYPO3\T3download\Service;
 
 class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
     
+	protected $logger;
+	
     /**
      * downloadConfigurationRepository
      * 
@@ -44,12 +47,22 @@ class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
     protected $downloadConfigurationRepository;
     
     /**
+     * @var \TYPO3\CMS\Core\Resource\ResourceFactory
+     * @inject
+     */
+    protected $resourceFactory;
+    
+    /**
      * objectManager
      * 
      * @var \TYPO3\CMS\Extbase\Object\ObjectManager
      * @inject
      */
     protected $objectManager;
+    
+    function __construct() {
+    	$this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
+    }
     
     /**
      * Create a download configuration
@@ -61,36 +74,49 @@ class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
      * 
      * @return string The secured download URL or FALSE if invalid file references are found
      */
-    public function createDownloadConfiguration($fileReferences, $folderReferences = '', $validDate = 0, $externalId = '') {
+    public function createDownloadConfiguration($files, $folderReferences = '', $validDate = 0, $externalId = '') {
+    	
+    	$this->logger->info("creating download configuration via service", array (
+    			'files' => $files,
+    			'directories' => $folderReferences,
+    			'validTo' => $validDate,
+    			'externalId' => $externalId
+    	));
+    	
         $downloadConfiguration = null;
         
         $this->downloadConfigurationRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\T3download\\Domain\\Repository\\DownloadConfigurationRepository');
         $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $this->resourceFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\ResourceFactory');
         
-        if (count($fileReferences) > 0 && $this->checkFileReferences($fileReferences)) {
+        if (count($files) > 0 /*&& $this->checkFileReferences($files)*/) {
             $downloadConfiguration = $this->objectManager->get('TYPO3\\T3download\\Domain\\Model\\DownloadConfiguration');
-            foreach($fileReferences as $fileReferences) {
-                $newFileReference = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Domain\\Model\\FileReference');
-                $newFileReference->setOriginalResource($fileReferences);
-                
+            foreach($files as $file) {
+                //$newFileReference = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Domain\\Model\\FileReference');
+                //$newFileReference->setOriginalResource($file);
+            	$newFileReference = $this->createFileReferenceFromFalFileObject($file);
+            	
                 $downloadConfiguration->addFileReference($newFileReference);
-                $downloadConfiguration->setFolderReferences($folderReferences);
-                $downloadConfiguration->setExternalId($externalId);                                
+                //$downloadConfiguration->setFolderReferences($folderReferences);
             }
             
             $hash = crypt($downloadConfiguration->getUid(), $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
             $downloadConfiguration->setHash($hash);            
             $downloadConfiguration->setValidDate($validDate);
+                $downloadConfiguration->setExternalId($externalId);                                
             
         } else {
-            \Tx_ExtDebug::var_dump('Check failed!');
+            //\Tx_ExtDebug::var_dump('Check failed!');
+	    	$this->logger->error("invalid file references", array (
+	    			'files' => $files
+	    	));
             return false;
         }
         
         if ($downloadConfiguration !== null) {
             $this->downloadConfigurationRepository->add($downloadConfiguration);
         } else {
-            \Tx_ExtDebug::var_dump('Download configuration null');
+            //\Tx_ExtDebug::var_dump('Download configuration null');
             return false;
         }
         
@@ -98,21 +124,30 @@ class FileService extends \TYPO3\CMS\Core\Service\AbstractService {
     }
     
     /**
-     * Validates an array of file references
-     * 
-     * @param array $fileReferences The file references
-     * 
-     * @return boolean Returns TRUE if all references are valid, FALSE otherwise.
+     * @param File $file
+     * @return \TYPO3\T3download\Domain\Model\FileReference
      */
-    protected function checkFileReferences($fileReferences) {
-        foreach ($fileReferences as $fileReference) {
-            if ($fileReference instanceof \TYPO3\CMS\Core\Resource\FileReference) {
-                continue;
-            }
-            return false;
-        }
-        
-        return true;
-    }   
+    protected function createFileReferenceFromFalFileObject(File $file) {
+    	$fileReference = $this->resourceFactory->createFileReferenceObject(
+    			array(
+    					'uid_local' => $file->getUid(),
+    					'uid_foreign' => uniqid('NEW_'),
+    					'uid' => uniqid('NEW_'),
+    			)
+    	);
+    	return $this->createFileReferenceFromFalFileReferenceObject($fileReference);
+    }
+    
+    /**
+     * @param FileReference $fileReference
+     * @return \TYPO3\T3download\Domain\Model\FileReference
+     */
+    protected function createFileReferenceFromFalFileReferenceObject(FileReference $fileReference) {
+    	/** @var $fileReferenceModel \TYPO3\CMS\Extbase\Domain\Model\FileReference */
+    	$fileReferenceModel = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Domain\\Model\\FileReference');
+    	$fileReferenceModel->setOriginalResource($fileReference);
+    
+    	return $fileReferenceModel;
+    }
     
 }

@@ -13,8 +13,19 @@ plugin.tx_t3download {
 	}
 }
 
-config.tx_extbase.persistence.classes {
-    TYPO3\CMS\Core\Resource\FileReference.mapping.tableName = sys_file_reference
+config.tx_extbase {
+	persistence {
+		classes {
+			TYPO3\T3download\Domain\Model\FileReference {
+				mapping {
+					tableName = sys_file_reference
+				}
+			}
+		}
+	}
+	objects {
+		TYPO3\CMS\Extbase\Domain\Model\FileReference.className = TYPO3\T3download\Domain\Model\FileReference
+	}
 }
 
 plugin.tx_t3download._CSS_DEFAULT_STYLE (

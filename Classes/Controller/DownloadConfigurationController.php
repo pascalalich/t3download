@@ -36,6 +36,8 @@ require \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3download'
  */
 class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 
+	protected $logger;
+	
     /**
      * downloadConfigurationRepository
      *
@@ -44,6 +46,10 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
      */
     protected $downloadConfigurationRepository;
 
+    function __construct() {
+    	$this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
+    }
+    
     /**
      * action list
      *
@@ -85,7 +91,7 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
             }
             
             foreach($fileReferences as $fileReference) {
-                \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($fileReference);
+               // \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($fileReference);
                 $file = $fileReference->getOriginalResource()->getOriginalFile();
                 $zip->add_file_from_path($file->getName(), PATH_site . 'fileadmin' . $file->getIdentifier());
             }
@@ -163,9 +169,19 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
         $uid = 1; // Track UID, insert here the UID of a track
         
         
+        $someFileIdentifier = 'music/01 Gospel Worship Airline (SongAusschnitt).mp3';          // image name in the storage repository (e.g. directly in fileadmin/ root, otherwise specify the subdirectory here, e.ge. 'templates/image123.png'
+        $storageRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\StorageRepository'); // create instance to storage repository
+        $storage = $storageRepository->findByUid(1);    // get file storage with uid 1 (this should by default point to your fileadmin/ directory)
+        $file = $storage->getFile($someFileIdentifier); // create file object for the image (the file will be indexed if necessary)
+        
+        $this->logger->info("found file", array (
+        		'file' => $file->toArray()
+        ));
+        
         // How to get a full file from a track
-        $fileRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
-        $fileObjects = $fileRepository->findByRelation('tx_t3music_domain_model_track', 'full_file', $uid);
+        // $fileRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
+        //$fileObjects = $fileRepository->findByRelation('tx_t3music_domain_model_track', 'full_file', $uid);
+        $fileObjects = array($file);
         
         // Check if our service is available
         if (is_object($serviceObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstanceService('fileService'))) {

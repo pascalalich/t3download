@@ -96,7 +96,13 @@ $TCA['tx_t3download_domain_model_downloadconfiguration'] = array(
 		'file_references' => array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:t3download/Resources/Private/Language/locallang_db.xlf:tx_t3download_domain_model_downloadconfiguration.file_references',
-			'config' => TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('file_references', array(), 'mp3', 'php')
+			'config' => TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig('file_references', array(
+				'foreign_match_fields' => array(
+						'fieldname' => 'file_references',
+						'tablenames' => 'tx_t3download_domain_model_downloadconfiguration',
+						'table_local' => 'sys_file',
+				)
+			), 'mp3', 'php')
 		),
 		'valid_date' => array(
 			'exclude' => 0,
@@ -106,7 +112,7 @@ $TCA['tx_t3download_domain_model_downloadconfiguration'] = array(
 				'size' => 10,
 				'eval' => 'datetime',
 				'checkbox' => 1,
-				'default' => time()
+				'default' => (time()+604800)
 			),
 		),
         // @TODO: There's a known bug with internal_type=folder
