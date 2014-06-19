@@ -16,6 +16,10 @@ module.tx_t3download {
 	view < plugin.tx_t3download.view
 	persistence < plugin.tx_t3download.persistence
 	features < plugin.tx_t3download.features
+	settings {
+		baseURL < config.baseURL
+		downloadURL = download.php?password=
+	}
 }
 
 config.tx_extbase {

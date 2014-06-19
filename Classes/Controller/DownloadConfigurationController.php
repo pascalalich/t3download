@@ -56,7 +56,6 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
      * @return void
      */
     public function listAction() {       
-        
         $downloadConfigurations = $this->downloadConfigurationRepository->findAll();        
         $this->view->assign('downloadConfigurations', $downloadConfigurations);
     }

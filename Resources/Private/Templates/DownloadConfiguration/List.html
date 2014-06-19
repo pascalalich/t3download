@@ -12,27 +12,26 @@ in /Configuration/ExtensionBuilder/settings.yaml:
 Otherwise your changes will be overwritten the next time you save the extension in the extension builder
 
 <f:section name="main">
-<h1>Listing for DownloadConfiguration</h1>
+<h1>Manage downloads</h1>
 
 <f:flashMessages renderMode="div" />
 
 <table  class="tx_t3download" >
 	<tr>
-		<th> </th>
-		<th>Hash</th>
+		<th>ID</th>
+		<th>Order</th>
+		<th>Password</th>
 		<th>Valid to</th>
-		<th> </th>
 	</tr>
 
 	<f:for each="{downloadConfigurations}" as="downloadConfiguration">
 		<tr>
 			<td>{downloadConfiguration.uid}</td>
+			<td>{downloadConfiguration.externalId}</td>
 			<td>{downloadConfiguration.hash}</td>
-			<td>{downloadConfiguration.validDate -> f:format.date()}</td>
-			<td><f:link.action action="download" arguments="{download : downloadConfiguration.hash}">Download</f:link.action></td>
+			<td>{downloadConfiguration.validDate -> f:format.date(format:'d.m.Y H:i	')}</td>
+			<td><a href="{settings.baseURL}{settings.downloadURL}{downloadConfiguration.hash}">Download Link</a></td>
 		</tr>
 	</f:for>
 </table>
-
-<f:link.action action="new">New DownloadConfiguration</f:link.action>
 </f:section>
