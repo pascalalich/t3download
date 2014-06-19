@@ -22,6 +22,8 @@ Otherwise your changes will be overwritten the next time you save the extension 
 		<th>Order</th>
 		<th>Password</th>
 		<th>Valid to</th>
+		<th></th>
+		<th></th>
 	</tr>
 
 	<f:for each="{downloadConfigurations}" as="downloadConfiguration">
@@ -31,6 +33,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 			<td>{downloadConfiguration.hash}</td>
 			<td>{downloadConfiguration.validDate -> f:format.date(format:'d.m.Y H:i	')}</td>
 			<td><a href="{settings.baseURL}{settings.downloadURL}{downloadConfiguration.hash}">Download Link</a></td>
+			<td><f:link.action action="activate" arguments="{download : downloadConfiguration.hash}">Make valid</f:link.action></td>
 		</tr>
 	</f:for>
 </table>

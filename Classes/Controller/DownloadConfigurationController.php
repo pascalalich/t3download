@@ -61,6 +61,29 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
     }
     
     /**
+     * Make download active again, i. e. prolong valid date.
+     *  
+     * @return void
+     */
+    
+    public function activateAction() {
+    	$securedUuid = $this->request->getArgument('download');
+    	
+    	if ($securedUuid == '') {
+    		exit;
+    	}
+    	
+    	$downloadConfiguration = $this->downloadConfigurationRepository->findBySecuredUuid($securedUuid);
+    	if ($downloadConfiguration !== NULL) {
+	    	// 14 days
+	    	$validDuration = 14 * 24 * 60 * 60;
+	    	$downloadConfiguration->setValidDate(time() + $validDuration);
+	    	$this->downloadConfigurationRepository->update($downloadConfiguration);
+    	}
+    	$this->forward('list');
+    }
+    
+    /**
      * Download files
      *  
      * @return void

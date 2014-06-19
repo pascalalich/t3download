@@ -13,7 +13,7 @@ if (TYPO3_MODE === 'BE') {
 			'download',	// Submodule key
 			'',						// Position
 			array(
-					'DownloadConfiguration' => 'list,download',
+					'DownloadConfiguration' => 'list,download,activate',
 						
 			),
 			array(
