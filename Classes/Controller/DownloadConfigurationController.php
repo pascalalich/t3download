@@ -97,86 +97,49 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
             exit;
         }
         
-        $zip = new \ZipStream('example.zip');
         
         $downloadConfiguration = $this->downloadConfigurationRepository->findBySecuredUuid($securedUuid);
         
         if ($downloadConfiguration === null) {
+        	echo 'Kein Download gefunden.';
             exit;
         } else {
+	        $zip = new \ZipStream($downloadConfiguration->getExternalId().'.zip', array(
+       			'large_file_size' => 0,
+  			));
             $fileReferences = $downloadConfiguration->getFileReferences();
             $folderReferences = $downloadConfiguration->getFolderReferences();
             $validDate = $downloadConfiguration->getValidDate();
             
             if ($validDate === null || time() > $validDate->getTimestamp()) {
+            	echo 'Der Download darf nicht mehr heruntergeladen werden.';
                 exit;
             }
             
             foreach($fileReferences as $fileReference) {
-               // \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($fileReference);
                 $file = $fileReference->getOriginalResource()->getOriginalFile();
+                $this->logger->info("preparing file for download", array (
+                		'file' => $file->getIdentifier()
+                ));
                 $zip->add_file_from_path($file->getName(), PATH_site . 'fileadmin' . $file->getIdentifier());
             }
             
             if ($folderReferences !== '') {
                 $directories = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $folderReferences);
                 foreach($directories as $directory) {
+	                $this->logger->info("preparing dir for download", array (
+	                		'directory' => $directory
+	                ));
                     $files = scandir(PATH_site . $directory);
                     foreach($files as $file) {
+		                $this->logger->info("preparing file for download", array (
+		                		'file' => $directory.''.$file
+		                ));
                         $zip->add_file_from_path($file, PATH_site . $directory . $file);
                     }
                 }
             }
             $zip->finish();
-        }
-        
-        $fileName = basename($file);
-
-        if (is_file($file)) {
-
-            $fileLen = filesize($file);
-            $ext = strtolower(substr(strrchr($fileName, '.'), 1));
-
-            switch ($ext) {
-                case 'zip':
-                    $cType = 'application/zip';
-                    break;
-
-                //forbidden filetypes
-                case 'inc':
-                case 'conf':
-                case 'sql':
-                case 'cgi':
-                case 'htaccess':
-                case 'php':
-                case 'php3':
-                case 'php4':
-                case 'php5':
-                    exit;
-
-                default:
-                    exit;
-                    break;
-            }
-
-            $headers = array(
-                'Pragma' => 'public',
-                'Expires' => 0,
-                'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-                'Cache-Control' => 'public',
-                'Content-Description' => 'File Transfer',
-                'Content-Type' => $cType,
-                'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
-                'Content-Transfer-Encoding' => 'binary',
-                'Content-Length' => $fileLen
-            );
-
-            foreach ($headers as $header => $data) {
-                $this->response->setHeader($header, $data);
-            }
-
-            $this->response->sendHeaders();
-            @readfile($file);
         }
         exit;
     }
