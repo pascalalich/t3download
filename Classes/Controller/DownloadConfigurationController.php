@@ -122,6 +122,7 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
                 		'file' => $file->getIdentifier()
                 ));
                 $zip->add_file_from_path($file->getName(), PATH_site . 'fileadmin' . $file->getIdentifier());
+                ob_flush();
             }
             
             if ($folderReferences !== '') {
@@ -136,6 +137,7 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
 		                		'file' => $directory.''.$file
 		                ));
                         $zip->add_file_from_path($file, PATH_site . $directory . $file);
+                        ob_flush();
                     }
                 }
             }
