@@ -204,6 +204,19 @@ class DownloadConfiguration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEnti
         $this->hash = $hash;
     }
 
+    /**
+     * @return string the zip file path
+     */
+    public function getZipFilePath() {
+    	return PATH_site . 'uploads/tx_t3download/' . str_replace('/', '-', $this->hash) . '.zip';
+    }
+    
+	/**
+	 * @return whether the zip file already exists
+	 */
+    public function isZipFileExisting() {
+    	return file_exists($this->getZipFilePath());
+    }
 }
 
 ?>

@@ -82,6 +82,58 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
     	}
     	$this->forward('list');
     }
+
+    /**
+     * Make download active again, i. e. prolong valid date.
+     *  
+     * @return void
+     */
+    
+    public function createZIPAction() {
+    	$securedUuid = $this->request->getArgument('download');
+    	
+    	if ($securedUuid == '') {
+    		exit;
+    	}
+    	
+    	$downloadConfiguration = $this->downloadConfigurationRepository->findBySecuredUuid($securedUuid);
+		if ($downloadConfiguration !== NULL) {
+			$zipFilePath = $downloadConfiguration->getZipFilePath();
+			$this->logger->info("about to create zip file", array (
+					'file' => $zipFilePath
+			));
+    		$zip = new \ZipArchive();
+    		$success = $zip->open($zipFilePath, \ZipArchive::CREATE);
+    		
+    		if ($success === TRUE) {
+	    		$fileReferences = $downloadConfiguration->getFileReferences();
+	    		foreach($fileReferences as $fileReference) {
+	    			$file = $fileReference->getOriginalResource()->getOriginalFile();
+	    			$filePath = PATH_site .'fileadmin' . $file->getIdentifier();
+	    			if (file_exists($filePath)) {
+		    			$fileName = substr($filePath, strrpos($filePath, '/') + 1);
+		    			$this->logger->info("preparing file for zipping", array (
+		    					'path' => $filePath,
+		    					'name' => $fileName
+		    			));
+	    				$zip->addFile($filePath, $fileName);
+	    			} else {
+		    			$this->logger->error("file for zipping does not exist", array (
+		    					'file' => $filePath
+		    			));
+	    			}
+	    		}
+	    		$success = $zip->close();
+    		}
+    		
+    		if ($success === TRUE) {
+	    		$this->flashMessageContainer->add('ZIP file created!');
+    		} else {
+	    		$this->flashMessageContainer->add('ZIP file could not be created');
+    		}
+    	}
+    	$this->forward('list');
+    }
     
     /**
      * Download files
@@ -90,13 +142,11 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
      */
     
     public function downloadAction() {
-
         $securedUuid = $this->request->getArgument('download');
         
         if ($securedUuid == '') {
             exit;
         }
-        
         
         $downloadConfiguration = $this->downloadConfigurationRepository->findBySecuredUuid($securedUuid);
         
@@ -104,44 +154,28 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
         	echo 'Kein Download gefunden.';
             exit;
         } else {
-	        $zip = new \ZipStream($downloadConfiguration->getExternalId().'.zip', array(
-       			'large_file_size' => 0,
-  			));
-            $fileReferences = $downloadConfiguration->getFileReferences();
-            $folderReferences = $downloadConfiguration->getFolderReferences();
             $validDate = $downloadConfiguration->getValidDate();
-            
             if ($validDate === null || time() > $validDate->getTimestamp()) {
             	echo 'Der Download darf nicht mehr heruntergeladen werden.';
                 exit;
             }
             
-            foreach($fileReferences as $fileReference) {
-                $file = $fileReference->getOriginalResource()->getOriginalFile();
-                $this->logger->info("preparing file for download", array (
-                		'file' => $file->getIdentifier()
-                ));
-                $zip->add_file_from_path($file->getName(), PATH_site . 'fileadmin' . $file->getIdentifier());
-                ob_flush();
+            if ($downloadConfiguration->isZipFileExisting()) {
+	        	// Disable all output buffers
+	        	while (ob_get_level() > 0) {
+	        		if (!ob_end_clean()) {
+	            		echo 'Technischer Fehler beim Download (Code 1).';
+	        			exit;
+	        		}
+	        	}
+	            header('Content-Type: application/zip');
+	            header('Content-disposition: attachment; filename='.$downloadConfiguration->getExternalId().'.zip');
+	            header('Content-Length: ' . filesize($downloadConfiguration->getZipFilePath()));
+	            readfile($downloadConfiguration->getZipFilePath());
+            } else {
+            	echo 'Technischer Fehler beim Download (Code 2).';
+        		exit;
             }
-            
-            if ($folderReferences !== '') {
-                $directories = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $folderReferences);
-                foreach($directories as $directory) {
-	                $this->logger->info("preparing dir for download", array (
-	                		'directory' => $directory
-	                ));
-                    $files = scandir(PATH_site . $directory);
-                    foreach($files as $file) {
-		                $this->logger->info("preparing file for download", array (
-		                		'file' => $directory.''.$file
-		                ));
-                        $zip->add_file_from_path($file, PATH_site . $directory . $file);
-                        ob_flush();
-                    }
-                }
-            }
-            $zip->finish();
         }
         exit;
     }

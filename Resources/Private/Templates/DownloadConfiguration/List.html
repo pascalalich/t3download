@@ -32,8 +32,17 @@ Otherwise your changes will be overwritten the next time you save the extension 
 			<td>{downloadConfiguration.externalId}</td>
 			<td>{downloadConfiguration.hash}</td>
 			<td>{downloadConfiguration.validDate -> f:format.date(format:'d.m.Y H:i	')}</td>
-			<td><a href="{settings.baseURL}{settings.downloadURL}{downloadConfiguration.hash}">Download Link</a></td>
+			<td>
+				<f:if condition="{downloadConfiguration.zipFileExisting}">
+				<f:then>
+					<a href="{settings.baseURL}{settings.downloadURL}{downloadConfiguration.hash}">Download Link</a></td>
+				</f:then>
+				<f:else>
+					<f:link.action action="createZip" arguments="{download : downloadConfiguration.hash}">Create ZIP</f:link.action>
+				</f:else>
+				</f:if>
 			<td><f:link.action action="activate" arguments="{download : downloadConfiguration.hash}">Make valid</f:link.action></td>
+			<td>
 		</tr>
 	</f:for>
 </table>
