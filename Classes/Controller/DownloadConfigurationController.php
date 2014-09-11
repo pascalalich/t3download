@@ -1,7 +1,6 @@
 <?php
 
 namespace TYPO3\T3download\Controller;
-require \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3download') . 'Resources/Private/ZipStreamPHP/zipstream.php';
 /* * *************************************************************
  *  Copyright notice
  *
@@ -56,7 +55,12 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
      * @return void
      */
     public function listAction() {       
-        $downloadConfigurations = $this->downloadConfigurationRepository->findAll();        
+        $downloadConfigurations = $this->downloadConfigurationRepository->findAll();
+        foreach($downloadConfigurations as $downloadConfiguration) {
+        	if (!$downloadConfiguration->isValid() && $downloadConfiguration->isZipFileExisting()) {
+        		unlink($downloadConfiguration->getZipFilePath());
+        	}
+        }
         $this->view->assign('downloadConfigurations', $downloadConfigurations);
     }
     
@@ -154,24 +158,13 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
         	echo 'Kein Download gefunden.';
             exit;
         } else {
-            $validDate = $downloadConfiguration->getValidDate();
-            if ($validDate === null || time() > $validDate->getTimestamp()) {
+            if (!$downloadConfiguration->isValid()) {
             	echo 'Der Download darf nicht mehr heruntergeladen werden.';
                 exit;
             }
             
             if ($downloadConfiguration->isZipFileExisting()) {
-	        	// Disable all output buffers
-	        	while (ob_get_level() > 0) {
-	        		if (!ob_end_clean()) {
-	            		echo 'Technischer Fehler beim Download (Code 1).';
-	        			exit;
-	        		}
-	        	}
-	            header('Content-Type: application/zip');
-	            header('Content-disposition: attachment; filename='.$downloadConfiguration->getExternalId().'.zip');
-	            header('Content-Length: ' . filesize($downloadConfiguration->getZipFilePath()));
-	            readfile($downloadConfiguration->getZipFilePath());
+	            header('Location: http://www.thomassteinlein.de/'.$downloadConfiguration->getRelativeZipFilePath());
             } else {
             	echo 'Technischer Fehler beim Download (Code 2).';
         		exit;

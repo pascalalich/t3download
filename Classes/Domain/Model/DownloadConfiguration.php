@@ -208,7 +208,14 @@ class DownloadConfiguration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEnti
      * @return string the zip file path
      */
     public function getZipFilePath() {
-    	return PATH_site . 'uploads/tx_t3download/' . str_replace('/', '-', $this->hash) . '.zip';
+    	return PATH_site . $this->getRelativeZipFilePath();
+    }
+
+    /**
+     * @return string the zip file path
+     */
+    public function getRelativeZipFilePath() {
+    	return 'uploads/tx_t3download/' . str_replace('/', '-', $this->hash) . '.zip';
     }
     
 	/**
@@ -216,6 +223,13 @@ class DownloadConfiguration extends \TYPO3\CMS\Extbase\DomainObject\AbstractEnti
 	 */
     public function isZipFileExisting() {
     	return file_exists($this->getZipFilePath());
+    }
+    
+    /**
+     * @return boolean is it still valid?
+     */
+    public function isValid() {
+    	return $this->validDate !== null && time() <= $this->validDate->getTimestamp();
     }
 }
 
