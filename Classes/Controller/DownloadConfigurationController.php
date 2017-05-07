@@ -80,8 +80,10 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
     	$downloadConfiguration = $this->downloadConfigurationRepository->findBySecuredUuid($securedUuid);
     	if ($downloadConfiguration !== NULL) {
 	    	// 14 days
-	    	$validDuration = 14 * 24 * 60 * 60;
-	    	$downloadConfiguration->setValidDate(time() + $validDuration);
+	    	// $validDuration = 14 * 24 * 60 * 60;
+	    	$validDate = new \DateTime();
+	    	$validDate->add(new \DateInterval('P14D')); // 14 days
+	    	$downloadConfiguration->setValidDate($validDate);
 	    	$this->downloadConfigurationRepository->update($downloadConfiguration);
     	}
     	$this->forward('list');
@@ -131,9 +133,9 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
     		}
     		
     		if ($success === TRUE) {
-	    		$this->flashMessageContainer->add('ZIP file created!');
+	    		$this->addFlashMessage('ZIP file created!');
     		} else {
-	    		$this->flashMessageContainer->add('ZIP file could not be created');
+	    		$this->addFlashMessage('ZIP file could not be created');
     		}
     	}
     	$this->forward('list');
@@ -202,7 +204,7 @@ class DownloadConfigurationController extends \TYPO3\CMS\Extbase\Mvc\Controller\
 
             // This is how you create a download configuration
             $serviceObj->createDownloadConfiguration($fileObjects, 'fileadmin/', time() + 31556926, '854bgfd');            
-            $this->flashMessageContainer->add('New download configuration created!');
+            $this->addFlashMessage('New download configuration created!');
         }
         
         $this->redirect('list');
